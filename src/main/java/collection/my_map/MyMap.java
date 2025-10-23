@@ -1,4 +1,4 @@
-package my_map;
+package collection.my_map;
 
 public interface MyMap {
     int size();

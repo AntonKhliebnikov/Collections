@@ -1,6 +1,5 @@
 package collection.my_list;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 public class MyArrayList implements MyList {
@@ -108,13 +107,12 @@ public class MyArrayList implements MyList {
 
     @Override
     public int lastIndexOf(Integer object) {
-        int countOfEqualsElement = 0;
-        for (int i = 0; i < size; i++) {
+        for (int i = size - 1; i >= 0; i--) {
             if (Objects.equals(array[i], object)) {
-                countOfEqualsElement = i;
+                return i;
             }
         }
-        return countOfEqualsElement;
+        return 0;
     }
 
     @Override
@@ -126,7 +124,7 @@ public class MyArrayList implements MyList {
             }
             builder.append(array[i]);
         }
-        return "MyArrayList [" + builder.append("]");
+        return "MyArrayList: [" + builder.append("]");
     }
 
     private void resizeIfNeeded() {
