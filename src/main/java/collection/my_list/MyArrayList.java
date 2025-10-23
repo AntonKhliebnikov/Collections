@@ -71,12 +71,10 @@ public class MyArrayList implements MyList {
                 if (i == size - 1) {
                     array[i] = null;
                 } else {
-                    if (array[i].equals(array[i + 1])) i--;
                     System.arraycopy(array, i + 1, array, i, size - i - 1);
                 }
 
                 size--;
-                array[size] = null;
                 return true;
             }
         }
