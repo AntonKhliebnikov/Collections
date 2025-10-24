@@ -2,13 +2,13 @@ package collection.my_list;
 
 import java.util.Objects;
 
-public class MyArrayList implements MyList {
+public class MyArrayList<T> implements MyList<T> {
     private final static int DEFAULT_CAPACITY = 10;
-    private Integer[] array;
+    private Object[] array;
     private int size;
 
     public MyArrayList() {
-        this.array = new Integer[DEFAULT_CAPACITY];
+        this.array = new Object[DEFAULT_CAPACITY];
         this.size = 0;
     }
 
@@ -23,9 +23,9 @@ public class MyArrayList implements MyList {
     }
 
     @Override
-    public boolean contains(Integer object) {
-        for (Integer integer : array) {
-            if (Objects.equals(integer, object)) {
+    public boolean contains(T object) {
+        for (Object element : array) {
+            if (Objects.equals(element, object)) {
                 return true;
             }
         }
@@ -33,20 +33,20 @@ public class MyArrayList implements MyList {
     }
 
     @Override
-    public void add(Integer object) {
-        resizeIfNeeded();
+    public void add(T object) {
+        resize();
         array[size] = object;
         size++;
     }
 
     @Override
-    public void add(int index, Integer object) {
+    public void add(int index, T object) {
         if (index >= size) {
             add(object);
             return;
         }
 
-        Integer[] buffer = new Integer[size - index];
+        Object[] buffer = new Object[size - index];
         System.arraycopy(array, index, buffer, 0, buffer.length);
 
         for (int i = 0; i < size; i++) {
@@ -56,14 +56,14 @@ public class MyArrayList implements MyList {
             }
         }
         size++;
-        resizeIfNeeded();
+        resize();
         System.arraycopy(buffer, 0, array, index + 1, buffer.length);
     }
 
     @Override
-    public boolean remove(Integer object) {
+    public void remove(T object) {
         if (size == 0) {
-            return false;
+            return;
         }
 
         for (int i = 0; i < size; i++) {
@@ -75,26 +75,26 @@ public class MyArrayList implements MyList {
                 }
 
                 size--;
-                return true;
+                return;
             }
         }
-        return false;
     }
 
     @Override
     public void clear() {
-        array = new Integer[DEFAULT_CAPACITY];
+        array = new Object[DEFAULT_CAPACITY];
         size = 0;
     }
 
     @Override
-    public Integer get(int index) {
+    @SuppressWarnings("unchecked")
+    public T get(int index) {
         Objects.checkIndex(index, size);
-        return array[index];
+        return (T) array[index];
     }
 
     @Override
-    public int indexOf(Integer object) {
+    public int indexOf(T object) {
         for (int i = 0; i < size; i++) {
             if (Objects.equals(array[i], object)) {
                 return i;
@@ -104,13 +104,21 @@ public class MyArrayList implements MyList {
     }
 
     @Override
-    public int lastIndexOf(Integer object) {
+    public int lastIndexOf(T object) {
         for (int i = size - 1; i >= 0; i--) {
             if (Objects.equals(array[i], object)) {
                 return i;
             }
         }
         return 0;
+    }
+
+    private void resize() {
+        if (size == array.length) {
+            Object[] newArray = new Object[array.length * 2];
+            System.arraycopy(array, 0, newArray, 0, size);
+            array = newArray;
+        }
     }
 
     @Override
@@ -123,13 +131,5 @@ public class MyArrayList implements MyList {
             builder.append(array[i]);
         }
         return "MyArrayList: [" + builder.append("]");
-    }
-
-    private void resizeIfNeeded() {
-        if (size == array.length) {
-            Integer[] newArray = new Integer[array.length * 2];
-            System.arraycopy(array, 0, newArray, 0, size);
-            array = newArray;
-        }
     }
 }

@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public class CollectionsTest {
     public static void main(String[] args) {
-        MyMap map = new MyHashMap();
+        MyMap<String, Integer> map = new MyHashMap<>();
         map.put("Anton", 39 );
         map.put("Kris", 29 );
         map.put("Polya", 41 );

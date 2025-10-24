@@ -1,7 +1,7 @@
 package collection.my_queue;
 
-public interface MyQueue {
-    boolean offer(Integer object);
-    Integer poll();
-    Integer peek();
+public interface MyQueue<T> {
+    boolean offer(T object);
+    T poll();
+    T peek();
 }

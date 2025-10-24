@@ -2,40 +2,32 @@ package collection.my_map;
 
 import java.util.Arrays;
 
-public class MyHashMap implements MyMap {
+public class MyHashMap<K, V> implements MyMap<K, V> {
     private static final int DEFAULT_CAPACITY = 16;
     private static final float LOAD_FACTOR = 0.75f;
-    private final Entry[] table;
+    private final Entry<K, V>[] table;
     private int size;
     private int threshold;
 
 
-    private static class Entry {
+    private static class Entry<K, V> {
 
-        final String key;
-        Integer value;
+        final K key;
+        V value;
         final int hash;
-        Entry next;
+        Entry<K, V> next;
 
-        public Entry(String key, Integer value, int hash, Entry next) {
+        public Entry(K key, V value, int hash, Entry<K, V> next) {
             this.key = key;
             this.value = value;
             this.hash = hash;
             this.next = next;
         }
-
-        @Override
-        public String toString() {
-            return "Entry{" +
-                    "key='" + key + '\'' +
-                    ", value=" + value +
-                    '}';
-        }
-
     }
 
+    @SuppressWarnings("unchecked")
     public MyHashMap() {
-        this.table = new Entry[DEFAULT_CAPACITY];
+        this.table = (Entry<K, V>[]) new Entry[DEFAULT_CAPACITY];
         this.threshold = (int) (DEFAULT_CAPACITY * LOAD_FACTOR);
         this.size = 0;
     }
@@ -51,10 +43,10 @@ public class MyHashMap implements MyMap {
     }
 
     @Override
-    public void put(String key, Integer value) {
+    public void put(K key, V value) {
         int hash = key.hashCode();
         int index = indexFor(hash, table.length);
-        Entry current = table[index];
+        Entry<K, V> current = table[index];
         while (current != null) {
             if (current.hash == hash && current.key.equals(key)) {
                 current.value = value;
@@ -63,7 +55,7 @@ public class MyHashMap implements MyMap {
             current = current.next;
         }
 
-        Entry newEntry = new Entry(key, value, hash, table[index]);
+        Entry<K, V> newEntry = new Entry<>(key, value, hash, table[index]);
         table[index] = newEntry;
         size++;
         if (size > threshold) {
@@ -72,11 +64,11 @@ public class MyHashMap implements MyMap {
     }
 
     @Override
-    public boolean remove(String key) {
+    public boolean remove(K key) {
         int hash = key.hashCode();
         int index = indexFor(hash, table.length);
-        Entry prev = null;
-        Entry current = table[index];
+        Entry<K, V> prev = null;
+        Entry<K, V> current = table[index];
         while (current != null) {
             if (current.hash == hash && current.key.equals(key)) {
                 if (prev == null) {
@@ -100,25 +92,26 @@ public class MyHashMap implements MyMap {
     }
 
     @Override
-    public Integer get(String key) {
+    public V get(K key) {
         int hash = key.hashCode();
         int index = indexFor(hash, table.length);
-        Entry current = table[index];
+        Entry<K, V> current = table[index];
         while (current != null) {
             if (current.hash == hash && current.key.equals(key)) {
                 return current.value;
             }
             current = current.next;
         }
-        return 0;
+        return null;
     }
 
     @Override
-    public String[] keyArray() {
-        String[] keys = new String[size];
+    @SuppressWarnings("unchecked")
+    public K[] keyArray() {
+        K[] keys = (K[]) new Object[size];
         int indexForKeys = 0;
-        for (Entry bucketHead : table) {
-            Entry current = bucketHead;
+        for (Entry<K, V> bucketHead : table) {
+            Entry<K, V> current = bucketHead;
             while (current != null) {
                 keys[indexForKeys++] = current.key;
                 current = current.next;
@@ -128,17 +121,17 @@ public class MyHashMap implements MyMap {
     }
 
     @Override
-    public Integer[] valueArray() {
-        Integer[] values = new Integer[size];
+    @SuppressWarnings("unchecked")
+    public V[] valueArray() {
+        V[] values = (V[]) new Object[size];
         int indexForValues = 0;
-        for (Entry bucketHead : table) {
-            Entry current = bucketHead;
+        for (Entry<K, V> bucketHead : table) {
+            Entry<K, V> current = bucketHead;
             while (current != null) {
                 values[indexForValues++] = current.value;
                 current = current.next;
             }
         }
-
         return values;
     }
 
@@ -149,16 +142,17 @@ public class MyHashMap implements MyMap {
         return hash % capacity;
     }
 
+    @SuppressWarnings("unchecked")
     private void resize() {
-        Entry[] oldTable = table;
+        Entry<K, V>[] oldTable = table;
         int newCapacity = oldTable.length * 2;
-        Entry[] newTable = new Entry[newCapacity];
+        Entry<K, V>[] newTable = (Entry<K, V>[]) new Entry[newCapacity];
         threshold = (int) (newCapacity * LOAD_FACTOR);
 
-        for (Entry bucketHead : oldTable) {
-            Entry entry = bucketHead;
+        for (Entry<K, V> bucketHead : oldTable) {
+            Entry<K, V> entry = bucketHead;
             while (entry != null) {
-                Entry next = entry.next;
+                Entry<K, V> next = entry.next;
                 int newIndex = indexFor(entry.hash, newCapacity);
                 entry.next = newTable[newIndex];
                 newTable[newIndex] = entry;
@@ -171,8 +165,8 @@ public class MyHashMap implements MyMap {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         int index = 0;
-        for (Entry bucketHead : table) {
-            Entry current = bucketHead;
+        for (Entry<K, V> bucketHead : table) {
+            Entry<K, V> current = bucketHead;
             while (current != null) {
                 if (index > 0) {
                     builder.append(", ");

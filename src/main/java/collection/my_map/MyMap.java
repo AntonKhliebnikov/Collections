@@ -1,12 +1,12 @@
 package collection.my_map;
 
-public interface MyMap {
+public interface MyMap<K, V> {
     int size();
     boolean isEmpty();
-    void put(String key, Integer value);
-    boolean remove(String key);
+    void put(K key, V value);
+    boolean remove(K key);
     void clear();
-    Integer get(String key);
-    String[] keyArray();
-    Integer[] valueArray();
+    V get(K key);
+    K[] keyArray();
+    V[] valueArray();
 }

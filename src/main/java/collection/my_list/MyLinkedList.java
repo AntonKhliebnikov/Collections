@@ -4,9 +4,9 @@ import collection.my_queue.MyQueue;
 
 import java.util.Objects;
 
-public class MyLinkedList implements MyList, MyQueue {
-    private Node first;
-    private Node last;
+public class MyLinkedList<T> implements MyList<T>, MyQueue<T> {
+    private Node<T> first;
+    private Node<T> last;
     private int size;
 
     public MyLinkedList() {
@@ -15,12 +15,12 @@ public class MyLinkedList implements MyList, MyQueue {
         size = 0;
     }
 
-    private static class Node {
-        Integer element;
-        Node prev;
-        Node next;
+    private static class Node<T> {
+        T element;
+        Node<T> prev;
+        Node<T> next;
 
-        public Node(Integer element) {
+        public Node(T element) {
             this.element = element;
         }
     }
@@ -36,8 +36,8 @@ public class MyLinkedList implements MyList, MyQueue {
     }
 
     @Override
-    public boolean contains(Integer object) {
-        Node currentNode = first;
+    public boolean contains(T object) {
+        Node<T> currentNode = first;
         while (currentNode != null) {
             if (Objects.equals(currentNode.element, object)) {
                 return true;
@@ -48,42 +48,41 @@ public class MyLinkedList implements MyList, MyQueue {
     }
 
     @Override
-    public void add(Integer object) {
+    public void add(T object) {
         linkLast(object);
         size++;
     }
 
     @Override
-    public void add(int index, Integer object) {
+    public void add(int index, T object) {
         if (index == 0) {
             linkFirst(object);
         } else if (index >= size) {
             linkLast(object);
         } else {
-            Node node = nodeAt(index);
+            Node<T> node = nodeAt(index);
             linkBefore(object, node);
         }
         size++;
     }
 
     @Override
-    public boolean remove(Integer object) {
-        Node currentNode = first;
+    public void remove(T object) {
+        Node<T> currentNode = first;
         while (currentNode != null) {
             if (Objects.equals(currentNode.element, object)) {
                 unlink(currentNode);
                 size--;
-                return true;
+                return;
             }
             currentNode = currentNode.next;
         }
-        return false;
     }
 
     @Override
     public void clear() {
         while (first != null) {
-            Node currentNode = first;
+            Node<T> currentNode = first;
             first = currentNode.next;
             currentNode.element = null;
             currentNode.prev = null;
@@ -94,14 +93,14 @@ public class MyLinkedList implements MyList, MyQueue {
     }
 
     @Override
-    public Integer get(int index) {
+    public T get(int index) {
         Objects.checkIndex(index, size);
         return nodeAt(index).element;
     }
 
     @Override
-    public int indexOf(Integer object) {
-        Node currentNode = first;
+    public int indexOf(T object) {
+        Node<T> currentNode = first;
         int index = 0;
         while (currentNode != null) {
             if (Objects.equals(currentNode.element, object)) {
@@ -114,8 +113,8 @@ public class MyLinkedList implements MyList, MyQueue {
     }
 
     @Override
-    public int lastIndexOf(Integer object) {
-        Node currentNode = last;
+    public int lastIndexOf(T object) {
+        Node<T> currentNode = last;
         int index = size - 1;
         while (currentNode != null) {
             if (Objects.equals(currentNode.element, object)) {
@@ -128,25 +127,25 @@ public class MyLinkedList implements MyList, MyQueue {
     }
 
     @Override
-    public boolean offer(Integer object) {
+    public boolean offer(T object) {
         linkLast(object);
         size++;
         return true;
     }
 
     @Override
-    public Integer poll() {
+    public T poll() {
         if (isEmpty()) {
             return null;
         }
 
-        Integer firstElement = get(0);
+        T firstElement = get(0);
         remove(firstElement);
         return firstElement;
     }
 
     @Override
-    public Integer peek() {
+    public T peek() {
         if (isEmpty()) {
             return null;
         }
@@ -154,8 +153,8 @@ public class MyLinkedList implements MyList, MyQueue {
         return get(0);
     }
 
-    private Node nodeAt(int index) {
-        Node currentNode = first;
+    private Node<T> nodeAt(int index) {
+        Node<T> currentNode = first;
         if (index < size / 2) {
             for (int i = 0; i <= index; i++) {
                 if (i == index) {
@@ -175,8 +174,8 @@ public class MyLinkedList implements MyList, MyQueue {
         return currentNode;
     }
 
-    private void linkFirst(Integer object) {
-        Node newNode = new Node(object);
+    private void linkFirst(T object) {
+        Node<T> newNode = new Node<>(object);
         if (size == 0) {
             first = last = newNode;
         } else {
@@ -186,8 +185,8 @@ public class MyLinkedList implements MyList, MyQueue {
         first = newNode;
     }
 
-    private void linkLast(Integer object) {
-        Node newNode = new Node(object);
+    private void linkLast(T object) {
+        Node<T> newNode = new Node<>(object);
         if (size == 0) {
             first = last = newNode;
         } else {
@@ -197,18 +196,18 @@ public class MyLinkedList implements MyList, MyQueue {
         last = newNode;
     }
 
-    private void linkBefore(Integer object, Node node) {
-        Node prev = node.prev;
-        Node newNode = new Node(object);
+    private void linkBefore(T object, Node<T> node) {
+        Node<T> prev = node.prev;
+        Node<T> newNode = new Node<>(object);
         newNode.prev = prev;
         newNode.next = node;
         prev.next = newNode;
         node.prev = newNode;
     }
 
-    private void unlink(Node node) {
-        Node prev = node.prev;
-        Node next = node.next;
+    private void unlink(Node<T> node) {
+        Node<T> prev = node.prev;
+        Node<T> next = node.next;
 
         if (prev != null) {
             prev.next = node.next;
@@ -229,7 +228,7 @@ public class MyLinkedList implements MyList, MyQueue {
 
     @Override
     public String toString() {
-        Node currentNode = first;
+        Node<T> currentNode = first;
         StringBuilder builder = new StringBuilder();
         int index = 0;
         while (currentNode != null) {

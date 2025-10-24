@@ -1,14 +1,14 @@
 package collection.my_list;
 
-public interface MyList {
+public interface MyList<T> {
     int size();
     boolean isEmpty();
-    boolean contains(Integer object);
-    void add(Integer object);
-    void add(int index, Integer object);
-    boolean remove(Integer object);
+    boolean contains(T object);
+    void add(T object);
+    void add(int index, T object);
+    void remove(T object);
     void clear();
-    Integer get(int index);
-    int indexOf(Integer object);
-    int lastIndexOf(Integer object);
+    T get(int index);
+    int indexOf(T object);
+    int lastIndexOf(T object);
 }
